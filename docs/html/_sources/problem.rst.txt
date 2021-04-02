@@ -1,17 +1,22 @@
 The problem
 ============
 
-Greenhouse gases have far-ranging environmental and health effects. They cause climate change by trapping heat, and they also contribute to respiratory disease from smog and air pollution. Extreme weather, food supply disruptions, and increased wildfires are other effects of climate change caused by greenhouse gases.
+Air pollution consists of chemicals or particles in the atmosphere, that pose serious health and environmental threats.
+But what causes air pollution? And what does it mean for our planet? Some air pollution comes from natural sources, like volcanic eruptions, wild fires, or allergens.
 
-CO2 is the gas that causes the most impact.
+But most air pollution results from human activities such as energy used in agriculture.
 
-.. image:: resources/gases.jpg
-	:width: 200px
-	:align: center
-
-Human activity as combustion engines, fossil fuels or cement production generate huge amount of this gas.
+There are different types of human-made air pollution. When we burn fossil fuels to produce energy they release greenhouse gasses into the air. This emissions such as carbon dioxide, methane, nitrous oxide and fluorinated gasses trap heat from the sun in earth's atmosphere, leading to a rise in global temperatures and contributing to respiratory disease from smog and air pollution.
 
 The solution
 -------------
 
-In order to contribute to the solution, our team decided to develop a centralized greengouse gases monitoring IoT system which would be of great help to governments to collect statistical data on pollution from each area in the city accurately and thus, know what measures to take in order to improve our situation and protect the people living there.
+In order to contribute to the solution, our team decided to develop a greenhouse gas monitoring IoT system which would be of great help to governments to collect accurate statistical data on pollution from the cities in real time.
+
+This system would consist of a network of IoT devices equipped with greenhouse gas sensors connected to the Internet and distributed throughout the cities. This system would take advantage of the OneM2M service layer to communicate with a central server, which would receive and store the data.
+
+.. image:: resources/idea.jpg
+	:align: center
+
+
+In order to visualize the data, there will be a web-app that will fetch the data from the server and generate a heatmap of gas levels.

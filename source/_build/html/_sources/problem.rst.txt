@@ -15,4 +15,8 @@ In order to contribute to the solution, our team decided to develop a greenhouse
 
 This system would consist of a network of IoT devices equipped with greenhouse gas sensors connected to the Internet and distributed throughout the cities. This system would take advantage of the OneM2M service layer to communicate with a central server, which would receive and store the data.
 
+.. image:: resources/idea.jpg
+	:align: center
+
+
 In order to visualize the data, there will be a web-app that will fetch the data from the server and generate a heatmap of gas levels.

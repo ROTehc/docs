@@ -3,7 +3,7 @@ Implementation
 
 Our system architecture is based on OneM2M Service Layer developed by engineers from European Telecomunications Standards Institute. There is a infrastructure node called CSE, a network of nodeMCU devices with gas sensors distribuited all over the territory, and an Infrastructure Application Entity to visualize the data.
 
-.. image:: resources/arch.png
+.. image:: resources/arch.jpeg
 	:align: center
 
 in-CSE
