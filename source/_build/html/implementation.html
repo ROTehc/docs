@@ -1,7 +1,7 @@
 <!doctype html>
 <html class="no-js">
   <head><meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="&lt;no title&gt;" href="demo.html" /><link rel="prev" title="The problem" href="problem.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Demo" href="demo.html" /><link rel="prev" title="The problem" href="problem.html" />
 
     <meta name="generator" content="sphinx-3.5.2, furo 2021.02.28.beta28"/>
         <title>Implementation - ROTehc docs</title>
@@ -112,8 +112,9 @@
   <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="problem.html">The problem</a></li>
-<li class="toctree-l1"><a class="reference internal" href="problem.html#thr-solution">Thr solution</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html">Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conclusion.html">Conclusion</a></li>
 </ul>
 
 </div>
@@ -130,8 +131,8 @@
         </label>
         <div class="section" id="implementation">
 <h1>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h1>
-<p>Our system architecture is based on OneM2M Service Layer developed by engineers from European Telecomunications Standarts Instritute. There is a infrastructure node called CSE, a network of nodeMCU devices with gas sensors distribuited all over the territory, and an Infrastructure Application Entity to visualize the data.</p>
-<img alt="_images/arch.png" class="align-center" src="_images/arch.png"/>
+<p>Our system architecture is based on OneM2M Service Layer developed by engineers from European Telecomunications Standards Institute. There is a infrastructure node called CSE, a network of nodeMCU devices with gas sensors distribuited all over the territory, and an Infrastructure Application Entity to visualize the data.</p>
+<img alt="resources/arch.png" class="align-center" src="resources/arch.png"/>
 <div class="section" id="in-cse">
 <h2>in-CSE<a class="headerlink" href="#in-cse" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -139,7 +140,9 @@
 <h2>nodeMCU<a class="headerlink" href="#nodemcu" title="Permalink to this headline">¶</a></h2>
 <p>The nodeMCU is a low-cost open-source IoT platform. Its firmware runs on the ESP8266 Wi-Fi SoC.</p>
 <p>This device has several gas sensors as MG-811 in order to measure the CO2 in air. It also counts with a LCD display to show some operational information.</p>
-<img alt="_images/nodemcu.jpg" class="align-center" src="_images/nodemcu.jpg"/>
+<img alt="_images/mk1.jpg" class="align-center" src="_images/mk1.jpg"/>
+<p>When the it is impossible to suply the power to the device, there is a Lite version, equiped with a 18650 battery and a small solar panel. In addition, the devices doesn’t have LCD display and goes to deep sleep when not in use to save energy.</p>
+<img alt="_images/lite.jpg" class="align-center" src="_images/lite.jpg"/>
 <p>Every nodeMCU sends its data every minute to the CSE over HTTP POST requests.</p>
 </div>
 <div class="section" id="in-ae">
@@ -160,7 +163,7 @@
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">&lt;no title&gt;</div>
+                <div class="title">Demo</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
