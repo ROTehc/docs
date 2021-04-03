@@ -131,6 +131,12 @@
         </label>
         <div class="section" id="implementation">
 <h1>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h1>
+<div class="warning admonition">
+<p class="admonition-title">Assumptions</p>
+<ul class="simple">
+<li><p>Security is not considered in the current implementation.</p></li>
+</ul>
+</div>
 <p>Our system architecture is based on OneM2M Service Layer developed by engineers from European Telecomunications Standards Institute. There is a infrastructure node called CSE, a network of nodeMCU devices with gas sensors distribuited all over the territory, and an Infrastructure Application Entity to visualize the data.</p>
 <img alt="_images/arch.jpeg" class="align-center" src="_images/arch.jpeg"/>
 <p>In the case of scaling the project nationwide, middle nodes could be created with their own CSE for each city. One of the advantages of OneM2M is its scalability.</p>
