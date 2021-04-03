@@ -3,11 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-ROTehc IoT greenhouse gases monitoring documentation
+ROTehc docs
 =====================================================
 
 .. image:: _static/banner.png
 
+Welcome to the documentation of the ROTehc IoT project for the oneM2M Hackathon organized by ETSI in Malaga!
 
 .. toctree::
    :maxdepth: 2
@@ -17,3 +18,6 @@ ROTehc IoT greenhouse gases monitoring documentation
    implementation
    demo
    conclusion
+
+.. note:: The official repositories of the project can be found at:
+   `https://github.com/ROTehc <https://github.com/ROTehc>`_

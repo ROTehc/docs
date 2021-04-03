@@ -133,17 +133,29 @@
 <h1>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h1>
 <p>Our system architecture is based on OneM2M Service Layer developed by engineers from European Telecomunications Standards Institute. There is a infrastructure node called CSE, a network of nodeMCU devices with gas sensors distribuited all over the territory, and an Infrastructure Application Entity to visualize the data.</p>
 <img alt="_images/arch.jpeg" class="align-center" src="_images/arch.jpeg"/>
-<div class="section" id="in-cse">
-<h2>in-CSE<a class="headerlink" href="#in-cse" title="Permalink to this headline">¶</a></h2>
+<p>In the case of scaling the project nationwide, middle nodes could be created with their own CSE for each city. One of the advantages of OneM2M is its scalability.</p>
+<img alt="_images/arch2.jpeg" class="align-center" src="_images/arch2.jpeg"/>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Tha nationalwide architecture is only an idea, it was not implemented due to the limited scope of the Hackaton.</p>
 </div>
-<div class="section" id="nodemcu">
-<h2>nodeMCU<a class="headerlink" href="#nodemcu" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="in-cse-acme">
+<h2>in-CSE: ACME<a class="headerlink" href="#in-cse-acme" title="Permalink to this headline">¶</a></h2>
+<p>The institutioinal CSE is built over <a class="reference external" href="https://github.com/ankraft/ACME-oneM2M-CSE">ACME</a>, an open-source light implementation of subset of oneM2M standard specializations written in Python.</p>
+<a class="reference internal image-reference" href="_images/acme_sm.png"><img alt="_images/acme_sm.png" class="align-center" src="_images/acme_sm.png" style="width: 150px;"/></a>
+</div>
+<div class="section" id="ae-nodemcu">
+<h2>AE: nodeMCU<a class="headerlink" href="#ae-nodemcu" title="Permalink to this headline">¶</a></h2>
 <p>The nodeMCU is a low-cost open-source IoT platform. Its firmware runs on the ESP8266 Wi-Fi SoC.</p>
 <p>This device has several gas sensors as MG-811 in order to measure the CO2 in air. It also counts with a LCD display to show some operational information.</p>
 <img alt="_images/mk1.jpg" class="align-center" src="_images/mk1.jpg"/>
-<p>When the it is impossible to suply the power to the device, there is a Lite version, equiped with a 18650 battery and a small solar panel. In addition, the devices doesn’t have LCD display and goes to deep sleep when not in use to save energy.</p>
+<p>When the it is impossible to suply power to the device, there is a Lite version, equiped with a 18650 battery and a small solar panel. In addition, the device doesn’t have LCD display and enters in deep sleep when not in use to save energy.</p>
 <img alt="_images/lite.jpg" class="align-center" src="_images/lite.jpg"/>
 <p>Every nodeMCU sends its data every minute to the CSE over HTTP POST requests.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This devices are only prototypes. Correct operation is not guaranteed.</p>
+</div>
 </div>
 <div class="section" id="in-ae">
 <h2>in-AE<a class="headerlink" href="#in-ae" title="Permalink to this headline">¶</a></h2>
@@ -209,8 +221,8 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Implementation</a><ul>
-<li><a class="reference internal" href="#in-cse">in-CSE</a></li>
-<li><a class="reference internal" href="#nodemcu">nodeMCU</a></li>
+<li><a class="reference internal" href="#in-cse-acme">in-CSE: ACME</a></li>
+<li><a class="reference internal" href="#ae-nodemcu">AE: nodeMCU</a></li>
 <li><a class="reference internal" href="#in-ae">in-AE</a></li>
 </ul>
 </li>
