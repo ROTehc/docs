@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Demo" href="demo.html" /><link rel="prev" title="The problem" href="problem.html" />
 
-    <meta name="generator" content="sphinx-3.5.2, furo 2021.02.28.beta28"/>
+    <link rel="shortcut icon" href="_static/favicon.ico"/><meta name="generator" content="sphinx-3.5.2, furo 2021.02.28.beta28"/>
         <title>Implementation - ROTehc docs</title>
       <link rel="stylesheet" href="_static/styles/furo.css?digest=be5985a4059b5c2cd56ed0804790452beca62674">
     <link rel="stylesheet" href="_static/pygments.css">
@@ -114,7 +114,7 @@
 <li class="toctree-l1"><a class="reference internal" href="problem.html">The problem</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Implementation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo.html">Demo</a></li>
-<li class="toctree-l1"><a class="reference internal" href="conclusion.html">Conclusion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conclusion.html">Conclusions</a></li>
 </ul>
 
 </div>
@@ -131,34 +131,6 @@
         </label>
         <div class="section" id="implementation">
 <h1>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h1>
-<div class="warning admonition">
-<p class="admonition-title">Assumptions</p>
-<ul class="simple">
-<li><p>Security is not considered in the current implementation.</p></li>
-</ul>
-</div>
-<p>Our system architecture is based on OneM2M Service Layer developed by engineers from European Telecomunications Standards Institute. There is a infrastructure node called CSE, a network of nodeMCU devices with gas sensors distribuited all over the territory, and an Infrastructure Application Entity to visualize the data.</p>
-<img alt="_images/arch.jpeg" class="align-center" src="_images/arch.jpeg"/>
-<p>In the case of scaling the project nationwide, middle nodes could be created with their own CSE for each city. One of the advantages of OneM2M is its scalability.</p>
-<img alt="_images/arch2.jpeg" class="align-center" src="_images/arch2.jpeg"/>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The nationalwide architecture is only an idea, it was not implemented due to the limited scope of the Hackaton.</p>
-</div>
-<div class="section" id="in-cse-acme">
-<h2>in-CSE: ACME<a class="headerlink" href="#in-cse-acme" title="Permalink to this headline">¶</a></h2>
-<p>The institutioinal CSE is built over <a class="reference external" href="https://github.com/ankraft/ACME-oneM2M-CSE">ACME</a>, an open-source light implementation of subset of oneM2M standard specializations written in Python.</p>
-<a class="reference internal image-reference" href="_images/acme_sm.png"><img alt="_images/acme_sm.png" class="align-center" src="_images/acme_sm.png" style="width: 150px;"/></a>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>To give this project more seriousness, the middleware was uploaded in a Docker container to Heroku: <a class="reference external" href="https://rotehc-cse.herokuapp.com/">https://rotehc-cse.herokuapp.com/</a></p>
-</div>
-<p>Some modifications were needed to adapt the code to deploy it on Heroku. The code can be found in the ACME fork in our <a class="reference external" href="https://github.com/ROTehc/ACME-oneM2M-CSE">organization GitHub</a>.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The container runs over free plan dyno, which means that if goes offline after 30 minutes of innactivity. If it’s taking time to load, it means that the container is starting, so be patient. :)</p>
-</div>
-</div>
 <div class="section" id="ae-nodemcu">
 <h2>AE: nodeMCU<a class="headerlink" href="#ae-nodemcu" title="Permalink to this headline">¶</a></h2>
 <p>The nodeMCU is a low-cost open-source IoT platform. Its firmware runs on the ESP8266 Wi-Fi SoC.</p>
@@ -178,10 +150,49 @@
 <p>This devices are only prototypes. Correct operation is not guaranteed.</p>
 </div>
 </div>
-<div class="section" id="in-ae">
-<h2>in-AE<a class="headerlink" href="#in-ae" title="Permalink to this headline">¶</a></h2>
-<p>The infrastructure application entity consists of a web application written over Vue.js framework. The app fetches the data from the CSE and displays it on a map.</p>
-<img alt="_images/webapp.png" src="_images/webapp.png"/>
+<div class="section" id="in-cse-acme">
+<h2>in-CSE: ACME<a class="headerlink" href="#in-cse-acme" title="Permalink to this headline">¶</a></h2>
+<div class="warning admonition">
+<p class="admonition-title">Assumptions</p>
+<ul class="simple">
+<li><p>Security is not considered in the current implementation.</p></li>
+</ul>
+</div>
+<p>Our system architecture is based on OneM2M Service Layer developed by engineers from European Telecomunications Standards Institute. There is a infrastructure node called CSE, a network of nodeMCU devices with gas sensors distribuited all over the territory, and an Infrastructure Application Entity to visualize the data.</p>
+<img alt="_images/arch.jpeg" class="align-center" src="_images/arch.jpeg"/>
+<p>In the case of scaling the project nationwide, middle nodes could be created with their own CSE for each city. One of the advantages of OneM2M is its scalability.</p>
+<img alt="_images/arch2.jpeg" class="align-center" src="_images/arch2.jpeg"/>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The nationalwide architecture is only an idea, it was not implemented due to the limited scope of the Hackaton.</p>
+</div>
+<p>The in-CSE is built over <a class="reference external" href="https://github.com/ankraft/ACME-oneM2M-CSE">ACME</a>, an open-source light implementation of subset of oneM2M standard specializations written in Python.</p>
+<a class="reference internal image-reference" href="_images/acme_sm.png"><img alt="_images/acme_sm.png" class="align-center" src="_images/acme_sm.png" style="width: 150px;"/></a>
+<p>The resources tree is the following:</p>
+<p>Each IoT device has its own application dedicated node (ADN). Inside the nodes there are 2 containers, DESCRIPTOR and DATA:</p>
+<ul class="simple">
+<li><p><strong>DESCRIPTOR</strong> has one content instance inside with the location of the device stored in JSON format:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">"coords"</span><span class="p">:</span> <span class="p">[</span><span class="mf">-4.45</span><span class="p">,</span> <span class="mf">36.71</span><span class="p">]}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>DATA</strong> its dedicated to store the readings from the device. Each content instance uses a JSON format to store all sensors readings:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+ <span class="nt">"co2"</span> <span class="p">:</span> <span class="mi">658</span><span class="p">,</span>
+ <span class="nt">"o3"</span> <span class="p">:</span> <span class="mi">68</span><span class="p">,</span>
+ <span class="nt">"no2"</span> <span class="p">:</span> <span class="mi">116</span><span class="p">,</span>
+ <span class="nt">"so2"</span> <span class="p">:</span> <span class="mi">168</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Each IoT device, on first start, registers itself at the CSE with the information specified in the header of the .ino script, them creates the DESCRIPTOR container with its location, and then the DATA container. To avoid conflicts, the routine is aborted if the AE already exists at the CSE.</p>
+</div>
+<div class="section" id="web-app">
+<h2>Web-app<a class="headerlink" href="#web-app" title="Permalink to this headline">¶</a></h2>
+<p>The infrastructure application entity consists of a web application written with Vue.js framework. The app fetches the data from the CSE, parses the JSON, and displays it on a map.</p>
+<img alt="_images/webapp.jpg" src="_images/webapp.jpg"/>
 <p>Each nodeMCU has some coordinates associated with it. These points are distributed over the territory, forming cells according to Voronoi diagrams.</p>
 <a class="reference internal image-reference" href="_images/voronoi.png"><img alt="_images/voronoi.png" class="align-center" src="_images/voronoi.png" style="width: 350px;"/></a>
 <p>A Voronoi diagram is a nearest neighbor diagram: given a set of generator points, the Voronoi diagram creates nearest neighbor cells. Each cell is formed around one generator point, and the set of points closest to that generator is fully contained in its cell. The resulting diagram can be used to find the nearest generator for an arbitrary point or to interpolate the blank space around each generator to create a heatmap.</p>
@@ -250,9 +261,9 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Implementation</a><ul>
-<li><a class="reference internal" href="#in-cse-acme">in-CSE: ACME</a></li>
 <li><a class="reference internal" href="#ae-nodemcu">AE: nodeMCU</a></li>
-<li><a class="reference internal" href="#in-ae">in-AE</a></li>
+<li><a class="reference internal" href="#in-cse-acme">in-CSE: ACME</a></li>
+<li><a class="reference internal" href="#web-app">Web-app</a></li>
 </ul>
 </li>
 </ul>

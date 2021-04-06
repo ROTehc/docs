@@ -1,42 +1,6 @@
 Implementation
 ===============
 
-.. admonition:: Assumptions
-	:class: warning
-
-	- Security is not considered in the current implementation.
-
-
-Our system architecture is based on OneM2M Service Layer developed by engineers from European Telecomunications Standards Institute. There is a infrastructure node called CSE, a network of nodeMCU devices with gas sensors distribuited all over the territory, and an Infrastructure Application Entity to visualize the data.
-
-.. image:: resources/arch.jpeg
-	:align: center
-
-In the case of scaling the project nationwide, middle nodes could be created with their own CSE for each city. One of the advantages of OneM2M is its scalability.
-
-.. image:: resources/arch2.jpeg
-	:align: center
-
-.. warning:: The nationalwide architecture is only an idea, it was not implemented due to the limited scope of the Hackaton.
-
-
-in-CSE: ACME
--------------
-
-
-The institutioinal CSE is built over `ACME <https://github.com/ankraft/ACME-oneM2M-CSE>`_, an open-source light implementation of subset of oneM2M standard specializations written in Python.
-
-.. image:: resources/acme_sm.png
-	:align: center
-	:width: 150
-
-
-.. note:: To give this project more seriousness, the middleware was uploaded in a Docker container to Heroku: `https://rotehc-cse.herokuapp.com/ <https://rotehc-cse.herokuapp.com/>`_
-
-Some modifications were needed to adapt the code to deploy it on Heroku. The code can be found in the ACME fork in our `organization GitHub <https://github.com/ROTehc/ACME-oneM2M-CSE>`_.
-
-.. warning:: The container runs over free plan dyno, which means that if goes offline after 30 minutes of innactivity. If it's taking time to load, it means that the container is starting, so be patient. :)
-
 AE: nodeMCU
 ------------
 
@@ -62,13 +26,65 @@ Every nodeMCU sends its data every amount of time (defined by the user) to the C
 
 .. warning:: This devices are only prototypes. Correct operation is not guaranteed.
 
+in-CSE: ACME
+-------------
 
-in-AE
-------
+.. admonition:: Assumptions
+	:class: warning
 
-The infrastructure application entity consists of a web application written over Vue.js framework. The app fetches the data from the CSE and displays it on a map.
+	- Security is not considered in the current implementation.
 
-.. image:: resources/webapp.png
+
+Our system architecture is based on OneM2M Service Layer developed by engineers from European Telecomunications Standards Institute. There is a infrastructure node called CSE, a network of nodeMCU devices with gas sensors distribuited all over the territory, and an Infrastructure Application Entity to visualize the data.
+
+.. image:: resources/arch.jpeg
+	:align: center
+
+In the case of scaling the project nationwide, middle nodes could be created with their own CSE for each city. One of the advantages of OneM2M is its scalability.
+
+.. image:: resources/arch2.jpeg
+	:align: center
+
+.. warning:: The nationalwide architecture is only an idea, it was not implemented due to the limited scope of the Hackaton.
+
+
+The in-CSE is built over `ACME <https://github.com/ankraft/ACME-oneM2M-CSE>`_, an open-source light implementation of subset of oneM2M standard specializations written in Python.
+
+.. image:: resources/acme_sm.png
+	:align: center
+	:width: 150
+
+The resources tree is the following:
+
+Each IoT device has its own application dedicated node (ADN). Inside the nodes there are 2 containers, DESCRIPTOR and DATA:
+
+- **DESCRIPTOR** has one content instance inside with the location of the device stored in JSON format:
+
+.. code-block:: json
+
+	{"coords": [-4.45, 36.71]}
+
+- **DATA** its dedicated to store the readings from the device. Each content instance uses a JSON format to store all sensors readings:
+
+.. code-block:: json
+
+	{
+	 "co2" : 658,
+	 "o3" : 68,
+	 "no2" : 116,
+	 "so2" : 168
+	}
+
+Each IoT device, on first start, registers itself at the CSE with the information specified in the header of the .ino script, them creates the DESCRIPTOR container with its location, and then the DATA container. To avoid conflicts, the routine is aborted if the AE already exists at the CSE.
+  
+
+
+Web-app
+--------
+
+The infrastructure application entity consists of a web application written with Vue.js framework. The app fetches the data from the CSE, parses the JSON, and displays it on a map.
+
+.. image:: resources/webapp.jpg
 
 
 Each nodeMCU has some coordinates associated with it. These points are distributed over the territory, forming cells according to Voronoi diagrams.
