@@ -82,12 +82,12 @@ Each IoT device, on first start, registers itself at the CSE with the informatio
 Web-app
 --------
 
-The infrastructure application entity consists of a web application written with Vue.js framework. The app fetches the data from the CSE, parses the JSON, and displays it on a map.
+The web-app is written with Vue.js framework. The app fetches the data from the CSE, parses the JSON, and displays it on a map.
 
 .. image:: resources/webapp.jpg
 
 
-Each nodeMCU has some coordinates associated with it. These points are distributed over the territory, forming cells according to Voronoi diagrams.
+Each IoT device is plotted as a point on the map, forming cells for each node according to Voronoi diagrams.
 
 .. image:: resources/voronoi.png
 	:align: center
@@ -102,3 +102,8 @@ In the following image it could be seen the advantages of a Voronoi diagram over
 The app also provides average gas concentrations and a selector of gases to show on map. The app pulls every nodeMCU sensor data from the CSE, and plots it.
 
 .. note:: This app was also deployed online using Netlify platform: `https://elated-hugle-53ac94.netlify.app/ <https://elated-hugle-53ac94.netlify.app/>`_
+
+Backend
+--------
+
+At first, we developed only the frontend, and we thought that it would work fine. At the time of connecting all together, the frontend started to send GET requests, and the CORS (Cross-Origin Resource Sharing) error appeared. The CSE implementation didn't allow the 'Access-Control-Allow-Origin' header, so we needed to develop our own backend that would work as a proxy. The backend would also parse the response JSON to give to the frontend the refined data.

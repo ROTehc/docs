@@ -191,7 +191,7 @@
 </div>
 <div class="section" id="web-app">
 <h2>Web-app<a class="headerlink" href="#web-app" title="Permalink to this headline">¶</a></h2>
-<p>The infrastructure application entity consists of a web application written with Vue.js framework. The app fetches the data from the CSE, parses the JSON, and displays it on a map.</p>
+<p>The web-app is written with Vue.js framework. The app fetches the data from the CSE, parses the JSON, and displays it on a map.</p>
 <img alt="_images/webapp.jpg" src="_images/webapp.jpg"/>
 <p>Each nodeMCU has some coordinates associated with it. These points are distributed over the territory, forming cells according to Voronoi diagrams.</p>
 <a class="reference internal image-reference" href="_images/voronoi.png"><img alt="_images/voronoi.png" class="align-center" src="_images/voronoi.png" style="width: 350px;"/></a>
@@ -203,6 +203,10 @@
 <p class="admonition-title">Note</p>
 <p>This app was also deployed online using Netlify platform: <a class="reference external" href="https://elated-hugle-53ac94.netlify.app/">https://elated-hugle-53ac94.netlify.app/</a></p>
 </div>
+</div>
+<div class="section" id="backend">
+<h2>Backend<a class="headerlink" href="#backend" title="Permalink to this headline">¶</a></h2>
+<p>At first, we developed only the frontend of our app, we thought that it would work fine. When the time of connecting all together came, and the frontend started to send GET requests, we faced the CORS (Cross-Origin Resource Sharing) error. The CSE implementation didn’t allow the ‘Access-Control-Allow-Origin’ header, so we needed to develop our own backend that would work as a proxy. The backend would also parse the response JSON to give the frontend the refined data.</p>
 </div>
 </div>
 
@@ -264,6 +268,7 @@
 <li><a class="reference internal" href="#ae-nodemcu">AE: nodeMCU</a></li>
 <li><a class="reference internal" href="#in-cse-acme">in-CSE: ACME</a></li>
 <li><a class="reference internal" href="#web-app">Web-app</a></li>
+<li><a class="reference internal" href="#backend">Backend</a></li>
 </ul>
 </li>
 </ul>
