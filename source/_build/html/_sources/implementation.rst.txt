@@ -6,6 +6,9 @@ AE: nodeMCU
 
 The nodeMCU is a low-cost open-source IoT platform. Its firmware runs on the ESP8266 Wi-Fi SoC.
 
+Sensor nodes
+~~~~~~~~~~~~~
+
 This device has several gas sensors as MG-811 in order to measure the CO2 and other gases in air. It also counts with a LCD display to show some operational information.
 
 .. warning:: As the time and budget were limited, it was not possible to buy the sensors, instead it was decided to simulate the signals by software in the nodeMCU itself.
@@ -24,45 +27,15 @@ For ocasions when the power supply is a problem, Lite version was developed. Thi
 	
 Every nodeMCU sends its data every amount of time (defined by the user) to the CSE over HTTP POST requests.
 
-.. warning:: This devices are only prototypes. Correct operation is not guaranteed.
+Each sensor node device, on first start, registers itself at the CSE with the information specified in the header of the .ino script, then creates the LOCATION container with its location, and then the DATA container. To avoid conflicts, the routine is aborted if the AE already exists at the CSE.
 
-in-CSE: ACME
--------------
+Each sensor node has its own container inside sensors group AE. Inside the nodes there are 2 containers, DESCRIPTOR and DATA:
 
-.. admonition:: Assumptions
-	:class: warning
-
-	- Security is not considered in the current implementation.
-
-
-Our system architecture is based on OneM2M Service Layer developed by engineers from European Telecomunications Standards Institute. There is a infrastructure node called CSE, a network of nodeMCU devices with gas sensors distribuited all over the territory, and an Infrastructure Application Entity to visualize the data.
-
-.. image:: resources/arch.jpeg
-	:align: center
-
-In the case of scaling the project nationwide, middle nodes could be created with their own CSE for each city. One of the advantages of OneM2M is its scalability.
-
-.. image:: resources/arch2.jpeg
-	:align: center
-
-.. warning:: The nationalwide architecture is only an idea, it was not implemented due to the limited scope of the Hackaton.
-
-
-The in-CSE is built over `ACME <https://github.com/ankraft/ACME-oneM2M-CSE>`_, an open-source light implementation of subset of oneM2M standard specializations written in Python.
-
-.. image:: resources/acme_sm.png
-	:align: center
-	:width: 150
-
-The resources tree is the following:
-
-Each IoT device has its own application dedicated node (ADN). Inside the nodes there are 2 containers, DESCRIPTOR and DATA:
-
-- **DESCRIPTOR** has one content instance inside with the location of the device stored in JSON format:
+- **LOCATION** has one content instance inside with the location of the device stored in JSON format:
 
 .. code-block:: json
 
-	{"coords": [-4.45, 36.71]}
+	{"lon": -4.45, "lat": 36.71}
 
 - **DATA** its dedicated to store the readings from the device. Each content instance uses a JSON format to store all sensors readings:
 
@@ -75,8 +48,39 @@ Each IoT device has its own application dedicated node (ADN). Inside the nodes t
 	 "so2" : 168
 	}
 
-Each IoT device, on first start, registers itself at the CSE with the information specified in the header of the .ino script, them creates the DESCRIPTOR container with its location, and then the DATA container. To avoid conflicts, the routine is aborted if the AE already exists at the CSE.
-  
+Actuator nodes
+~~~~~~~~~~~~~~~
+
+Each actuator node has its own container inside actuators group AE. Inside the nodes there are 2 containers, QUALITY and LOCATION:
+
+- **QUALITY** will store the Air Quality Index (AQI).
+- **LOCATION** will store the location of the device in JSON format (same as for Sensor Node)
+
+The function of actuator nodes are to listen to changes in Air Quality Index (AQI) from the QUALITY container. The AQI is calculated with our own formula at the backend based on the readings of 3 nearest sensor nodes to the actuator. The actuator node could be placed on a public place connected to a big screen or LEDs to indicate the level of danger of the toxic gas levels.
+
+.. warning:: This devices are only prototypes. Correct operation is not guaranteed.
+
+in-CSE: ACME
+-------------
+
+.. admonition:: Assumptions
+	:class: warning
+
+	- Security is not considered in the current implementation.
+
+
+Our system architecture is based on OneM2M Service Layer developed by engineers from European Telecomunications Standards Institute. There is a infrastructure node called CSE, a group of nodeMCU devices with gas sensors, and another group with actuators, distribuited all over the territory, and an SmartApp as application entity to visualize the data.
+
+.. image:: resources/architecture.jpg
+	:align: center
+
+
+
+The in-CSE is built over `ACME <https://github.com/ankraft/ACME-oneM2M-CSE>`_, an open-source light implementation of subset of oneM2M standard specializations written in Python.
+
+.. image:: resources/acme_sm.png
+	:align: center
+	:width: 150
 
 
 Web-app
@@ -87,7 +91,7 @@ The web-app is written with Vue.js framework. The app fetches the data from the 
 .. image:: resources/webapp.jpg
 
 
-Each nodeMCU has some coordinates associated with it. These points are distributed over the territory, forming cells according to Voronoi diagrams.
+Each IoT device is plotted as a point on the map, forming cells for each node according to Voronoi diagrams.
 
 .. image:: resources/voronoi.png
 	:align: center
@@ -106,4 +110,4 @@ The app also provides average gas concentrations and a selector of gases to show
 Backend
 --------
 
-At first, we developed only the frontend of our app, we thought that it would work fine. When the time of connecting all together came, and the frontend started to send GET requests, we faced the CORS (Cross-Origin Resource Sharing) error. The CSE implementation didn't allow the 'Access-Control-Allow-Origin' header, so we needed to develop our own backend that would work as a proxy. The backend would also parse the response JSON to give the frontend the refined data.
+At first, we developed only the frontend, and we thought that it would work fine. At the time of connecting all together, the frontend started to send GET requests, and the CORS (Cross-Origin Resource Sharing) error appeared. The CSE implementation didn't allow the 'Access-Control-Allow-Origin' header, so we needed to develop our own backend that would work as a proxy. The backend would also parse the response JSON to give to the frontend the refined data.
