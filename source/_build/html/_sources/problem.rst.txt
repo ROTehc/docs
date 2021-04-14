@@ -26,7 +26,7 @@ This system would consist of a network of two groups of IoT devices:
   
 All devices would be connected to the Internet and take advantage of the OneM2M service layer to communicate with a central server, which would receive, store and manage changes in the data.
 
-.. image:: resources/idea.jpg
+.. image:: resources/idea.png
 	:align: center
 
 
