@@ -11,12 +11,11 @@ ROTehc docs
 Welcome to the documentation of the ROTehc IoT project for the oneM2M Hackathon organized by ETSI in Malaga!
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
    problem
    implementation
-   demo
    conclusion
 
 .. note:: The official repositories of the project can be found at:

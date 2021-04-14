@@ -51,30 +51,24 @@ Each sensor node has its own container inside sensors group AE. Inside the nodes
 Actuator nodes
 ~~~~~~~~~~~~~~~
 
-Each actuator node has its own container inside actuators group AE. Inside the nodes there are 2 containers, QUALITY and LOCATION:
+Each actuator node has its own container inside actuators group container. Inside the nodes there are 2 containers, QUALITY and LOCATION:
 
 - **QUALITY** will store the Air Quality Index (AQI).
 - **LOCATION** will store the location of the device in JSON format (same as for Sensor Node)
 
-The function of actuator nodes are to listen to changes in Air Quality Index (AQI) from the QUALITY container. The AQI is calculated with our own formula at the backend based on the readings of 3 nearest sensor nodes to the actuator. The actuator node could be placed on a public place connected to a big screen or LEDs to indicate the level of danger of the toxic gas levels.
+The function of actuator nodes are to listen to changes in Air Quality Index (AQI) from the QUALITY container. The AQI is calculated with our own formula at the backend based on the readings of the nearest sensor nodes to the actuator. The actuator node could be placed on a public place connected to a big screen or LEDs to indicate the level of danger of the toxic gas levels.
+
+.. math::
+	AQI(x) = 11-\max\left({10\cdot\min\left({1,\frac{(x- \mathit{L})}{\mathit{H} - \mathit{L}}}\right),1}\right)
+
+.. note:: :math:`L=low, H=high`
 
 .. warning:: This devices are only prototypes. Correct operation is not guaranteed.
 
 in-CSE: ACME
 -------------
 
-.. admonition:: Assumptions
-	:class: warning
-
-	- Security is not considered in the current implementation.
-
-
 Our system architecture is based on OneM2M Service Layer developed by engineers from European Telecomunications Standards Institute. There is a infrastructure node called CSE, a group of nodeMCU devices with gas sensors, and another group with actuators, distribuited all over the territory, and an SmartApp as application entity to visualize the data.
-
-.. image:: resources/architecture.jpg
-	:align: center
-
-
 
 The in-CSE is built over `ACME <https://github.com/ankraft/ACME-oneM2M-CSE>`_, an open-source light implementation of subset of oneM2M standard specializations written in Python.
 
@@ -82,9 +76,19 @@ The in-CSE is built over `ACME <https://github.com/ankraft/ACME-oneM2M-CSE>`_, a
 	:align: center
 	:width: 150
 
+The resources tree is the following:
 
-Web-app
---------
+.. image:: resources/arch.png
+	:align: center
+
+
+The CSE contains the AE SmartApp. This entity has two containers which are Sensors, and Actuators.
+
+- The Sensors container stores all the sensor nodes, each node has a container storing its location in json format in the LOCATION container and the recorded measures in json format in the DATA container.
+- The Actuators container stores all the actuator nodes, each actuator has two containers, LOCATION (same as in sensor nodes) and QUALITY. The QUALITY container stores the Air Quality Index which is calculated at the Smart App based in the nearest sensors readings, each node is subscribed to its own QUALITY container in order to show the last updated information. 
+  
+Smart app
+----------
 
 The web-app is written with Vue.js framework. The app fetches the data from the CSE, parses the JSON, and displays it on a map.
 
@@ -105,9 +109,11 @@ In the following image it could be seen the advantages of a Voronoi diagram over
 
 The app also provides average gas concentrations and a selector of gases to show on map. The app pulls every nodeMCU sensor data from the CSE, and plots it.
 
-.. note:: This app was also deployed online using Netlify platform: `https://elated-hugle-53ac94.netlify.app/ <https://elated-hugle-53ac94.netlify.app/>`_
-
 Backend
 --------
 
 At first, we developed only the frontend, and we thought that it would work fine. At the time of connecting all together, the frontend started to send GET requests, and the CORS (Cross-Origin Resource Sharing) error appeared. The CSE implementation didn't allow the 'Access-Control-Allow-Origin' header, so we needed to develop our own backend that would work as a proxy. The backend would also parse the response JSON to give to the frontend the refined data.
+
+In addition, the backend tracks all sensor and actuator locations in order to assign the neighbours and compute each actuators AQI.
+
+The backends runs over `Deno <https://deno.land/>`_, a modern runtime for TypeScript.

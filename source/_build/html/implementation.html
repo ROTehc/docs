@@ -1,7 +1,7 @@
 <!doctype html>
 <html class="no-js">
   <head><meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Demo" href="demo.html" /><link rel="prev" title="The problem" href="problem.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Conclusions" href="conclusion.html" /><link rel="prev" title="The problem" href="problem.html" />
 
     <link rel="shortcut icon" href="_static/favicon.ico"/><meta name="generator" content="sphinx-3.5.2, furo 2021.02.28.beta28"/>
         <title>Implementation - ROTehc docs</title>
@@ -113,7 +113,6 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="problem.html">The problem</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Implementation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo.html">Demo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="conclusion.html">Conclusions</a></li>
 </ul>
 
@@ -169,12 +168,18 @@
 </div>
 <div class="section" id="actuator-nodes">
 <h3>Actuator nodes<a class="headerlink" href="#actuator-nodes" title="Permalink to this headline">¶</a></h3>
-<p>Each actuator node has its own container inside actuators group AE. Inside the nodes there are 2 containers, QUALITY and LOCATION:</p>
+<p>Each actuator node has its own container inside actuators group container. Inside the nodes there are 2 containers, QUALITY and LOCATION:</p>
 <ul class="simple">
 <li><p><strong>QUALITY</strong> will store the Air Quality Index (AQI).</p></li>
 <li><p><strong>LOCATION</strong> will store the location of the device in JSON format (same as for Sensor Node)</p></li>
 </ul>
-<p>The function of actuator nodes are to listen to changes in Air Quality Index (AQI) from the QUALITY container. The AQI is calculated with our own formula at the backend based on the readings of 3 nearest sensor nodes to the actuator. The actuator node could be placed on a public place connected to a big screen or LEDs to indicate the level of danger of the toxic gas levels.</p>
+<p>The function of actuator nodes are to listen to changes in Air Quality Index (AQI) from the QUALITY container. The AQI is calculated with our own formula at the backend based on the readings of the nearest sensor nodes to the actuator. The actuator node could be placed on a public place connected to a big screen or LEDs to indicate the level of danger of the toxic gas levels.</p>
+<div class="math-wrapper"><div class="math notranslate nohighlight">
+\[AQI(x) = 11-\max\left({10\cdot\min\left({1,\frac{(x- \mathit{L})}{\mathit{H} - \mathit{L}}}\right),1}\right)\]</div></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><span class="math notranslate nohighlight">\(L=low, H=high\)</span></p>
+</div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This devices are only prototypes. Correct operation is not guaranteed.</p>
@@ -183,19 +188,19 @@
 </div>
 <div class="section" id="in-cse-acme">
 <h2>in-CSE: ACME<a class="headerlink" href="#in-cse-acme" title="Permalink to this headline">¶</a></h2>
-<div class="warning admonition">
-<p class="admonition-title">Assumptions</p>
-<ul class="simple">
-<li><p>Security is not considered in the current implementation.</p></li>
-</ul>
-</div>
 <p>Our system architecture is based on OneM2M Service Layer developed by engineers from European Telecomunications Standards Institute. There is a infrastructure node called CSE, a group of nodeMCU devices with gas sensors, and another group with actuators, distribuited all over the territory, and an SmartApp as application entity to visualize the data.</p>
-<img alt="_images/architecture.jpg" class="align-center" src="_images/architecture.jpg"/>
 <p>The in-CSE is built over <a class="reference external" href="https://github.com/ankraft/ACME-oneM2M-CSE">ACME</a>, an open-source light implementation of subset of oneM2M standard specializations written in Python.</p>
 <a class="reference internal image-reference" href="_images/acme_sm.png"><img alt="_images/acme_sm.png" class="align-center" src="_images/acme_sm.png" style="width: 150px;"/></a>
+<p>The resources tree is the following:</p>
+<img alt="_images/arch.png" class="align-center" src="_images/arch.png"/>
+<p>The CSE contains the AE SmartApp. This entity has two containers which are Sensors, and Actuators.</p>
+<ul class="simple">
+<li><p>The Sensors container stores all the sensor nodes, each node has a container storing its location in json format in the LOCATION container and the recorded measures in json format in the DATA container.</p></li>
+<li><p>The Actuators container stores all the actuator nodes, each actuator has two containers, LOCATION (same as in sensor nodes) and QUALITY. The QUALITY container stores the Air Quality Index which is calculated at the Smart App based in the nearest sensors readings, each node is subscribed to its own QUALITY container in order to show the last updated information.</p></li>
+</ul>
 </div>
-<div class="section" id="web-app">
-<h2>Web-app<a class="headerlink" href="#web-app" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="smart-app">
+<h2>Smart app<a class="headerlink" href="#smart-app" title="Permalink to this headline">¶</a></h2>
 <p>The web-app is written with Vue.js framework. The app fetches the data from the CSE, parses the JSON, and displays it on a map.</p>
 <img alt="_images/webapp.jpg" src="_images/webapp.jpg"/>
 <p>Each IoT device is plotted as a point on the map, forming cells for each node according to Voronoi diagrams.</p>
@@ -204,14 +209,12 @@
 <p>In the following image it could be seen the advantages of a Voronoi diagram over a scatter plot:</p>
 <img alt="_images/california.jpeg" src="_images/california.jpeg"/>
 <p>The app also provides average gas concentrations and a selector of gases to show on map. The app pulls every nodeMCU sensor data from the CSE, and plots it.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This app was also deployed online using Netlify platform: <a class="reference external" href="https://elated-hugle-53ac94.netlify.app/">https://elated-hugle-53ac94.netlify.app/</a></p>
-</div>
 </div>
 <div class="section" id="backend">
 <h2>Backend<a class="headerlink" href="#backend" title="Permalink to this headline">¶</a></h2>
 <p>At first, we developed only the frontend, and we thought that it would work fine. At the time of connecting all together, the frontend started to send GET requests, and the CORS (Cross-Origin Resource Sharing) error appeared. The CSE implementation didn’t allow the ‘Access-Control-Allow-Origin’ header, so we needed to develop our own backend that would work as a proxy. The backend would also parse the response JSON to give to the frontend the refined data.</p>
+<p>In addition, the backend tracks all sensor and actuator locations in order to assign the neighbours and compute each actuators AQI.</p>
+<p>The backends runs over <a class="reference external" href="https://deno.land/">Deno</a>, a modern runtime for TypeScript.</p>
 </div>
 </div>
 
@@ -219,12 +222,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="demo.html">
+          <a class="next-page" href="conclusion.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Demo</div>
+                <div class="title">Conclusions</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -276,7 +279,7 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#in-cse-acme">in-CSE: ACME</a></li>
-<li><a class="reference internal" href="#web-app">Web-app</a></li>
+<li><a class="reference internal" href="#smart-app">Smart app</a></li>
 <li><a class="reference internal" href="#backend">Backend</a></li>
 </ul>
 </li>
@@ -294,5 +297,6 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
 </html>
