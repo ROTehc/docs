@@ -12,7 +12,7 @@ Welcome to the documentation of the ROTehc IoT project for the oneM2M Hackathon 
 
 .. toctree::
    :maxdepth: 3
-   :caption: Contents:
+   :caption: Contents
 
    problem
    implementation
@@ -20,3 +20,9 @@ Welcome to the documentation of the ROTehc IoT project for the oneM2M Hackathon 
 
 .. note:: The official repositories of the project can be found at:
    `https://github.com/ROTehc <https://github.com/ROTehc>`_
+
+.. toctree::
+   :caption: Development
+   :hidden:
+
+   GitHub <https://github.com/ROTehc>
