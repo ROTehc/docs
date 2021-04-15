@@ -109,11 +109,15 @@
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption"><span class="caption-text">Contents:</span></p>
+  <p class="caption"><span class="caption-text">Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="problem.html">The problem</a></li>
 <li class="toctree-l1"><a class="reference internal" href="implementation.html">Implementation</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Conclusions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ROTehc">GitHub</a></li>
 </ul>
 
 </div>
@@ -130,14 +134,23 @@
         </label>
         <div class="section" id="conclusions">
 <h1>Conclusions<a class="headerlink" href="#conclusions" title="Permalink to this headline">¶</a></h1>
+<p>As opposed to meteorological stations, which are usually located far away from each other and thus their readings could not be accurate for different streets (because of traffic density and some meteorological phenomena such as wind or rain), our system would allow for a few small and cheap sensors to be scattered around the city to offer real time data to a wide variety of actuators placed in strategical point, such as highly frequented streets, parks, highways, etc.</p>
+<div class="section" id="project-conclusions">
+<h2>Project Conclusions<a class="headerlink" href="#project-conclusions" title="Permalink to this headline">¶</a></h2>
+<p>We had no previous background in IoT, so this was a challenge for us. We feel like we’ve learned a lot during this hackaton and we’ll surely keep learning about it.</p>
+<p>The OneM2M protocol has truly been crucial for this project, and the more we advanced into the project and learnt about it the more we understood its potential.</p>
+<p>We’d like to thank the organizers of this hackaton for the opportunity to
+participate and the mentors for all the knowledge they’ve shared with us.</p>
+</div>
 <div class="section" id="solved-problems">
 <h2>Solved problems<a class="headerlink" href="#solved-problems" title="Permalink to this headline">¶</a></h2>
-<p><input checked="" type="checkbox"/> The documentation was very short and some concepts relative to the OneM2M API were complicated to understand.</p>
-<p><input checked="" type="checkbox"/> The nodeMCU has only one analogic input and our idea is 3 or 4 sensors per device.</p>
+<p><input checked="" type="checkbox"/> The documentation was very short and some concepts relative to the OneM2M API were complicated to understand</p>
+<p><input checked="" type="checkbox"/> The nodeMCU has only one analogic input and our idea is 3 or 4 sensors per device</p>
 <p><input checked="" type="checkbox"/> Every device needs to have an associated coordenades in the CSE.</p>
 <p><input checked="" type="checkbox"/> Application needs actuators to be “smart”</p>
 <p><input checked="" type="checkbox"/> Compute neighbours based on location</p>
 <p><input checked="" type="checkbox"/> CORS-error when accessing the data from frontend</p>
+<p><input checked="" type="checkbox"/> Store and organize the data efficiently</p>
 </div>
 </div>
 
@@ -188,6 +201,7 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Conclusions</a><ul>
+<li><a class="reference internal" href="#project-conclusions">Project Conclusions</a></li>
 <li><a class="reference internal" href="#solved-problems">Solved problems</a></li>
 </ul>
 </li>

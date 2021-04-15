@@ -109,11 +109,15 @@
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption"><span class="caption-text">Contents:</span></p>
+  <p class="caption"><span class="caption-text">Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="problem.html">The problem</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Implementation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="conclusion.html">Conclusions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/ROTehc">GitHub</a></li>
 </ul>
 
 </div>
@@ -168,12 +172,14 @@
 </div>
 <div class="section" id="actuator-nodes">
 <h3>Actuator nodes<a class="headerlink" href="#actuator-nodes" title="Permalink to this headline">¶</a></h3>
-<p>Each actuator node has its own container inside actuators group container. Inside the nodes there are 2 containers, QUALITY and LOCATION:</p>
-<ul class="simple">
-<li><p><strong>QUALITY</strong> will store the Air Quality Index (AQI).</p></li>
-<li><p><strong>LOCATION</strong> will store the location of the device in JSON format (same as for Sensor Node)</p></li>
-</ul>
-<p>The function of actuator nodes are to listen to changes in Air Quality Index (AQI) from the QUALITY container. The AQI is calculated with our own formula at the backend based on the readings of the nearest sensor nodes to the actuator. The actuator node could be placed on a public place connected to a big screen or LEDs to indicate the level of danger of the toxic gas levels.</p>
+<p>When an Actuator Node boots create a container under the Smart App’s Actuators container with a resource name specified in its configuration.</p>
+<p>Then it will create a QUALITY container to store an Air Quality Index (AQI) and a LOCATION container where it will upload its position just once.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The Actuator Node could be placed almost everywhere and show it’s AQI value in a lot of different ways, making it a really flexible platform.</p>
+</div>
+<p>Once the QUALITY container has been created it will create a subscription to it in order to be notified every time a new relevant AQI is sent from the Smart App.</p>
+<p>When a new AQI arrives at the Actuator Node, it will decide what to do based on the danger the AQI represents. Since the AQI goes from 1 (poor quality, high danger) to 10 (excellent quality, low danger), we can use color LEDs, display it on screens or even actuate servo motors to move indicators like a speedometer does.</p>
 <div class="math-wrapper"><div class="math notranslate nohighlight">
 \[AQI(x) = 11-\max\left({10\cdot\min\left({1,\frac{(x- \mathit{L})}{\mathit{H} - \mathit{L}}}\right),1}\right)\]</div></div>
 <div class="admonition note">
@@ -212,8 +218,41 @@
 </div>
 <div class="section" id="backend">
 <h2>Backend<a class="headerlink" href="#backend" title="Permalink to this headline">¶</a></h2>
-<p>At first, we developed only the frontend, and we thought that it would work fine. At the time of connecting all together, the frontend started to send GET requests, and the CORS (Cross-Origin Resource Sharing) error appeared. The CSE implementation didn’t allow the ‘Access-Control-Allow-Origin’ header, so we needed to develop our own backend that would work as a proxy. The backend would also parse the response JSON to give to the frontend the refined data.</p>
-<p>In addition, the backend tracks all sensor and actuator locations in order to assign the neighbours and compute each actuators AQI.</p>
+<p>The Smart App will be a backend service subscribed to the CSE.</p>
+<p>Every time a new Sensor Node or Actuator Node is created in the CSE the Smart App will store its resource name and coordinates in two separate data structures, one for Sensor Nodes and another one for Actuator Nodes. This system makes the calculation of distances and AQI reporting really fast.</p>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="kr">interface</span> <span class="nx">Coordinates</span> <span class="p">{</span>
+        <span class="nx">lat</span>: <span class="kt">number</span><span class="p">;</span>
+        <span class="nx">lon</span>: <span class="kt">number</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kr">interface</span> <span class="nx">Readings</span> <span class="p">{</span>
+        <span class="nx">co2</span>: <span class="kt">number</span><span class="p">;</span>
+        <span class="nx">o3</span>: <span class="kt">number</span><span class="p">;</span>
+        <span class="nx">no2</span>: <span class="kt">number</span><span class="p">;</span>
+        <span class="nx">so2</span>: <span class="kt">number</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kr">interface</span> <span class="nx">Node</span> <span class="p">{</span>
+        <span class="nx">coordinates</span>: <span class="kt">Coordinates</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kr">interface</span> <span class="nx">SensorNode</span> <span class="kr">extends</span> <span class="nx">Node</span> <span class="p">{</span>
+        <span class="nx">readings</span>: <span class="kt">Readings</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kr">interface</span> <span class="nx">ActuatorNode</span> <span class="kr">extends</span> <span class="nx">Node</span> <span class="p">{</span>
+        <span class="nx">closest</span>: <span class="kt">string</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kr">const</span> <span class="nx">sensorNodes</span>: <span class="kt">Map</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="nx">SensorNode</span><span class="o">&gt;</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">();</span> <span class="c1">// rn =&gt; SensorNode</span>
+<span class="kr">const</span> <span class="nx">actuatorNodes</span>: <span class="kt">Map</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="nx">ActuatorNode</span><span class="o">&gt;</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">();</span> <span class="c1">// rn =&gt; ActuatorNode</span>
+</pre></div>
+</div>
+<p>When a new Sensor Node is created, the Smart App will add it to the sensorNodes map and update the actuatorNodes map so each actuator points to their closest sensor.</p>
+<p>When a new Actuator Node is created, the Smart App will calculate just its closest sensor and then add it to the actuatorNodes map.</p>
+<p>When new readings arrive at the CSE from a Sensor Node, the Smart App will filter the actuators and take those who have the reporting sensor’s resource name as their closest sensor.</p>
+<p>Then it will calculate the reading’s AQI and send its value to the relevant actuators.</p>
+<p>The Smart App will also be responsible for sending data to the frontend when requested.</p>
 <p>The backends runs over <a class="reference external" href="https://deno.land/">Deno</a>, a modern runtime for TypeScript.</p>
 </div>
 </div>

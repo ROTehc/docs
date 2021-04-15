@@ -51,12 +51,15 @@ Each sensor node has its own container inside sensors group AE. Inside the nodes
 Actuator nodes
 ~~~~~~~~~~~~~~~
 
-Each actuator node has its own container inside actuators group container. Inside the nodes there are 2 containers, QUALITY and LOCATION:
+When an Actuator Node boots create a container under the Smart App's Actuators container with a resource name specified in its configuration.
 
-- **QUALITY** will store the Air Quality Index (AQI).
-- **LOCATION** will store the location of the device in JSON format (same as for Sensor Node)
+Then it will create a QUALITY container to store an Air Quality Index (AQI) and a LOCATION container where it will upload its position just once.
 
-The function of actuator nodes are to listen to changes in Air Quality Index (AQI) from the QUALITY container. The AQI is calculated with our own formula at the backend based on the readings of the nearest sensor nodes to the actuator. The actuator node could be placed on a public place connected to a big screen or LEDs to indicate the level of danger of the toxic gas levels.
+.. note:: The Actuator Node could be placed almost everywhere and show it's AQI value in a lot of different ways, making it a really flexible platform.
+
+Once the QUALITY container has been created it will create a subscription to it in order to be notified every time a new relevant AQI is sent from the Smart App.
+
+When a new AQI arrives at the Actuator Node, it will decide what to do based on the danger the AQI represents. Since the AQI goes from 1 (poor quality, high danger) to 10 (excellent quality, low danger), we can use color LEDs, display it on screens or even actuate servo motors to move indicators like a speedometer does.
 
 .. math::
 	AQI(x) = 11-\max\left({10\cdot\min\left({1,\frac{(x- \mathit{L})}{\mathit{H} - \mathit{L}}}\right),1}\right)
@@ -112,8 +115,47 @@ The app also provides average gas concentrations and a selector of gases to show
 Backend
 --------
 
-At first, we developed only the frontend, and we thought that it would work fine. At the time of connecting all together, the frontend started to send GET requests, and the CORS (Cross-Origin Resource Sharing) error appeared. The CSE implementation didn't allow the 'Access-Control-Allow-Origin' header, so we needed to develop our own backend that would work as a proxy. The backend would also parse the response JSON to give to the frontend the refined data.
+The Smart App will be a backend service subscribed to the CSE.
 
-In addition, the backend tracks all sensor and actuator locations in order to assign the neighbours and compute each actuators AQI.
+Every time a new Sensor Node or Actuator Node is created in the CSE the Smart App will store its resource name and coordinates in two separate data structures, one for Sensor Nodes and another one for Actuator Nodes. This system makes the calculation of distances and AQI reporting really fast.
+
+.. code-block:: typescript
+
+	interface Coordinates {
+		lat: number;
+		lon: number;
+	}
+
+	interface Readings {
+		co2: number;
+		o3: number;
+		no2: number;
+		so2: number;
+	}
+
+	interface Node {
+		coordinates: Coordinates;
+	}
+
+	interface SensorNode extends Node {
+		readings: Readings;
+	}
+
+	interface ActuatorNode extends Node {
+		closest: string;
+	}
+
+	const sensorNodes: Map<string, SensorNode> = new Map(); // rn => SensorNode
+	const actuatorNodes: Map<string, ActuatorNode> = new Map(); // rn => ActuatorNode
+
+When a new Sensor Node is created, the Smart App will add it to the sensorNodes map and update the actuatorNodes map so each actuator points to their closest sensor.
+
+When a new Actuator Node is created, the Smart App will calculate just its closest sensor and then add it to the actuatorNodes map.
+
+When new readings arrive at the CSE from a Sensor Node, the Smart App will filter the actuators and take those who have the reporting sensor's resource name as their closest sensor.
+
+Then it will calculate the reading's AQI and send its value to the relevant actuators.
+
+The Smart App will also be responsible for sending data to the frontend when requested.
 
 The backends runs over `Deno <https://deno.land/>`_, a modern runtime for TypeScript.
